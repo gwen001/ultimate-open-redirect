@@ -30,3 +30,5 @@ tmpfile="/tmp/$(date +%s).dat"
 
 php $source_dir"payloads_generator.php" $victim $hacker > $tmpfile
 php $source_dir"test_open_redirect.php" $tmpfile $hacker
+
+rm $tmpfile
