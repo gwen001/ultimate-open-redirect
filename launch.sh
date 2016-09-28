@@ -9,7 +9,6 @@ else
   source_dir=$(dirname $(echo $bash_source | awk -F " " '{print $(NF)}'))"/"
 fi
 
-echo $source_dir
 
 function usage() {
     echo "Usage: "$0" <victim url> <hacker url>"
