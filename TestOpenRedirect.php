@@ -18,8 +18,8 @@ class TestOpenRedirect
 	//CONST INIT_T_PARAMETER = ['','d','dest','dst','origin','out','q','redirect','r','redir','return','returnURI','return_uri','returnURL','return_url','return_to','returnTo','u','uri','url'];
 	CONST INIT_T_PARAMETER = [''];
 
-	CONST INIT_T_PRE_PREFIX = ['',' ','%00'];
-	//CONST INIT_T_PRE_PREFIX = [''];
+	//CONST INIT_T_PRE_PREFIX = ['',' ','%00'];
+	CONST INIT_T_PRE_PREFIX = ['','%00'];
 
 	CONST INIT_T_PREFIX = ['','hTtP:/','hTtP://','hTtP:///','/','//','///','\\','\\\\','\\\\\\'];
 	//CONST INIT_T_PREFIX = ['','hTtP://'];
