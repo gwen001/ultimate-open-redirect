@@ -77,8 +77,8 @@ class TestOpenRedirect
 	
 	
 	private $n_child = 0;
-	private $max_child = 10;
-	private $sleep = 1000000;
+	private $max_child = 7;
+	private $sleep = 100000;
 	private $cnt_notice = 500;
 			
 
