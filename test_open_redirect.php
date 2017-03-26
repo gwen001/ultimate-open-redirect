@@ -29,16 +29,22 @@ function signal_handler( $signal )
 function testOpenRedirect( $url, $hacker )
 {
 	$c = curl_init();
+	echo $url."\n";
 	curl_setopt( $c, CURLOPT_URL, $url );
-	curl_setopt( $c, CURLOPT_CONNECTTIMEOUT, 2 );
+	curl_setopt( $c, CURLOPT_CONNECTTIMEOUT, 3 );
 	curl_setopt( $c, CURLOPT_FOLLOWLOCATION, true );
 	curl_setopt( $c, CURLOPT_RETURNTRANSFER, true );
-	curl_exec( $c );
+	curl_setopt( $c, CURLOPT_SSL_VERIFYPEER, false );
+	curl_setopt( $c, CURLOPT_MAXREDIRS, 10 );
+	curl_setopt( $c, CURLOPT_HEADER, true );
+	$r = curl_exec( $c );
+	var_dump( $r );
 	$t_info = curl_getinfo( $c );
-	//var_dump( $t_info );
+	var_dump( $t_info );
 	curl_close( $c );
-
+	
 	$t_url = parse_url( $t_info['url'] );
+	//var_dump( $t_url );
 
 	if( $t_info['redirect_count'] && strtolower($t_url['host']) == $hacker ) {
 		return true;
@@ -108,7 +114,7 @@ for( $current_pointer=0 ; $current_pointer<$cnt ; )
 			$r = testOpenRedirect( $t_payloads[$current_pointer], $hacker );
 			if( $r ) {
 				$worked++;
-				echo "Open redirect -> ".$t_payloads[$current_pointer]."\n";
+				echo "Open redirect found -> ".$t_payloads[$current_pointer]."\n";
 			}
 			exit( 0 );
 		}
