@@ -24,6 +24,11 @@ function __autoload( $c ) {
 				Utils::help();
 				break;
 
+			case '-e':
+				$testor->setMaxChild($_SERVER['argv'][$i + 1]);
+				$i++;
+				break;
+
 			case '-r':
 				$testor->setRedirect( false );
 				break;

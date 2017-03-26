@@ -77,7 +77,7 @@ class TestOpenRedirect
 	
 	
 	private $n_child = 0;
-	private $max_child = 10;
+	private $max_child = 5;
 	private $sleep = 50000;
 	private $cnt_notice = 500;
 			
@@ -119,6 +119,15 @@ class TestOpenRedirect
 	}
 	public function setRedirect( $v ) {
 		$this->redirect = (bool)$v;
+		return true;
+	}
+
+	
+	public function getMaxChild() {
+		return $this->max_child;
+	}
+	public function setMaxChild( $v ) {
+		$this->max_child = (int)$v;
 		return true;
 	}
 

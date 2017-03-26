@@ -7,6 +7,7 @@ Usage: php ultimate-open-redirect.php [OPTIONS] -t <target> -z <hacker url>
 
 Options:
 	-h	print this help
+	-e	set threads, default=5
 	-r	do NOT follow redirection
 	-t	single target to test or source file
 	-u	urlencode payloads, default=false
