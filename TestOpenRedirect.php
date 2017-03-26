@@ -77,8 +77,8 @@ class TestOpenRedirect
 	
 	
 	private $n_child = 0;
-	private $max_child = 7;
-	private $sleep = 100000;
+	private $max_child = 10;
+	private $sleep = 50000;
 	private $cnt_notice = 500;
 			
 
@@ -237,7 +237,7 @@ class TestOpenRedirect
 	
 	private function request( $url )
 	{
-		//echo $url."\n";
+		echo $url."\n";
 
 		$c = curl_init();
 		curl_setopt( $c, CURLOPT_URL, $url );
