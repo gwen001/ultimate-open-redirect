@@ -164,7 +164,7 @@ class TestOpenRedirect
 
 	// http://stackoverflow.com/questions/16238510/pcntl-fork-results-in-defunct-parent-process
 	// Thousand Thanks!
-	private function signal_handler( $signo, $pid=null, $status=null )
+	private function signal_handler( $signal, $pid=null, $status=null )
 	{
 		// If no pid is provided, Let's wait to figure out which child process ended
 		if( !$pid ){
