@@ -181,8 +181,8 @@ class TestOpenRedirect
 				//      echo "$pid exited with status ".$exitCode."\n";
 				//  }
 				// Process is finished, so remove it from the list.
-				unset( $this->t_process[$pid] );
 				$this->n_child--;
+				unset( $this->t_process[$pid] );
 			}
 			elseif( $pid ) {
 				// Job finished before the parent process could record it as launched.
@@ -271,7 +271,7 @@ class TestOpenRedirect
 			echo "\n";
 		}
 
-		echo "\n";
+		echo "\nEnd reached.\n";
 	}
 	
 	
