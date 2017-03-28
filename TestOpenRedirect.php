@@ -79,6 +79,8 @@ class TestOpenRedirect
 	private $n_child = 0;
 	private $max_child = 5;
 	private $sleep = 50000;
+	private $t_process = [];
+	private $t_signal_queue = [];
 	private $cnt_notice = 500;
 			
 
@@ -159,21 +161,41 @@ class TestOpenRedirect
 		return true;
 	}
 
-		
-	public function signal_handler( $signal )
+
+	// http://stackoverflow.com/questions/16238510/pcntl-fork-results-in-defunct-parent-process
+	// Thousand Thanks!
+	private function signal_handler( $signo, $pid=null, $status=null )
 	{
-		switch( $signal )
-		{
-			case SIGCHLD:
-				$this->n_child--;
-				pcntl_waitpid( -1, $status, WNOHANG );
-				break;
-			default:
-				exit( 0 );
-				break;
+		// If no pid is provided, Let's wait to figure out which child process ended
+		if( !$pid ){
+			$pid = pcntl_waitpid( -1, $status, WNOHANG );
 		}
+		
+		// Get all exited children
+		while( $pid > 0 )
+		{
+			if( $pid && isset($this->t_process[$pid]) ) {
+				// I don't care about exit status right now.
+				//  $exitCode = pcntl_wexitstatus($status);
+				//  if($exitCode != 0){
+				//      echo "$pid exited with status ".$exitCode."\n";
+				//  }
+				// Process is finished, so remove it from the list.
+				unset( $this->t_process[$pid] );
+				$this->n_child--;
+			}
+			elseif( $pid ) {
+				// Job finished before the parent process could record it as launched.
+				// Store it to handle when the parent process is ready
+				$this->t_signal_queue[$pid] = $status;
+			}
+			
+			$pid = pcntl_waitpid( -1, $status, WNOHANG );
+		}
+		
+		return true;
 	}
-	
+
 
 	public function run()
 	{
@@ -199,7 +221,9 @@ class TestOpenRedirect
 		pcntl_signal( SIGCHLD, array($this,'signal_handler') );
 		//pcntl_signal( SIGTERM, array($this,'signal_handler') );
 		//pcntl_signal( SIGTSTP, array($this,'signal_handler') );
-
+		
+		$already_noticed = [];
+		
 		foreach( $this->target as $target )
 		{
 			file_put_contents( 'php://stderr', sprintf("Target: %s\n", $target) );
@@ -209,19 +233,26 @@ class TestOpenRedirect
 			
 			for( $current_pointer=0 ; $current_pointer<$n_payloads ; )
 			{
-				if( ($current_pointer%$this->cnt_notice) == 0 ) {
+				if( ($current_pointer%$this->cnt_notice) == 0 && !in_array($current_pointer,$already_noticed) ) {
 					echo "Current ".$current_pointer."...\n";
+					$already_noticed[] = $current_pointer;
 				}
+				
 				if( $this->n_child < $this->max_child )
 				{
 					$pid = pcntl_fork();
-			
+					
 					if( $pid == -1 ) {
 						// fork error
 					} elseif( $pid ) {
 						// father
 						$this->n_child++;
 						$current_pointer++;
+						$this->t_process[$pid] = uniqid();
+				        if( isset($this->t_signal_queue[$pid]) ){
+				        	$this->signal_handler( SIGCHLD, $pid, $this->t_signal_queue[$pid] );
+				        	unset( $this->t_signal_queue[$pid] );
+				        }
 					} else {
 						// child process
 						$tested++;
@@ -246,7 +277,7 @@ class TestOpenRedirect
 	
 	private function request( $url )
 	{
-		echo $url."\n";
+		//echo $url."\n";
 
 		$c = curl_init();
 		curl_setopt( $c, CURLOPT_URL, $url );
@@ -332,6 +363,7 @@ class TestOpenRedirect
 		}
 		
 		$this->t_payloads = array_unique( $this->t_payloads );
+		sort( $this->t_payloads );
 		//var_dump( $this->t_payloads );
 		//exit();
 		$n_payloads = count( $this->t_payloads );
