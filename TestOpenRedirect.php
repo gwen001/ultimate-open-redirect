@@ -55,6 +55,13 @@ class TestOpenRedirect
 	private $input_file = null;
 	
 	/**
+	 * @var int
+	 *
+	 * timeout
+	 */
+	private $timeout = 10;
+
+	/**
 	 * @var bool
 	 *
 	 * follow redirection
@@ -82,7 +89,7 @@ class TestOpenRedirect
 	private $t_process = [];
 	private $t_signal_queue = [];
 	private $cnt_notice = 500;
-			
+	
 
 	public function getTarget() {
 		return $this->target;
@@ -130,6 +137,15 @@ class TestOpenRedirect
 	}
 	public function setMaxChild( $v ) {
 		$this->max_child = (int)$v;
+		return true;
+	}
+
+	
+	public function getTimeout() {
+		return $this->timeout;
+	}
+	public function setTimeout( $v ) {
+		$this->timeout = (int)$v;
 		return true;
 	}
 
@@ -281,9 +297,9 @@ class TestOpenRedirect
 
 		$c = curl_init();
 		curl_setopt( $c, CURLOPT_URL, $url );
-		curl_setopt( $c, CURLOPT_CONNECTTIMEOUT, 5 );
+		curl_setopt( $c, CURLOPT_CONNECTTIMEOUT, $this->timeout );
 		curl_setopt( $c, CURLOPT_FOLLOWLOCATION, true );
-		curl_setopt( $c, CURLOPT_RETURNTRANSFER, true );
+		curl_setopt( $c, CURLOPT_RETURNTRANSFER, false );
 		curl_setopt( $c, CURLOPT_SSL_VERIFYPEER, false );
 		curl_exec( $c );
 		$t_info = curl_getinfo( $c );

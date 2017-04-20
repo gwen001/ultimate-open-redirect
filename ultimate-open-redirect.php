@@ -29,6 +29,11 @@ function __autoload( $c ) {
 				$i++;
 				break;
 
+			case '-i':
+				$testor->setTimeout($_SERVER['argv'][$i + 1]);
+				$i++;
+				break;
+
 			case '-r':
 				$testor->setRedirect( false );
 				break;
