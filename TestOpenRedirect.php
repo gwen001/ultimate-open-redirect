@@ -298,8 +298,8 @@ class TestOpenRedirect
 		$c = curl_init();
 		curl_setopt( $c, CURLOPT_URL, $url );
 		curl_setopt( $c, CURLOPT_CONNECTTIMEOUT, $this->timeout );
-		curl_setopt( $c, CURLOPT_FOLLOWLOCATION, true );
-		curl_setopt( $c, CURLOPT_RETURNTRANSFER, false );
+		curl_setopt( $c, CURLOPT_FOLLOWLOCATION, $this->redirect );
+		curl_setopt( $c, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $c, CURLOPT_SSL_VERIFYPEER, false );
 		curl_exec( $c );
 		$t_info = curl_getinfo( $c );
